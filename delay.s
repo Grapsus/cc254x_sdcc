@@ -57,7 +57,7 @@ loopJump:  ; Guaranteed to have a different parity from loopStart.
     nop
     nop
     nop
-_delayMicroseconds:
+_delay_us:
     mov a,dpl
     jz loopEnd
     djnz dpl, loopStart

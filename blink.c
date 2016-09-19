@@ -3,7 +3,7 @@
 #include "util.h"
 
 int main(void) {
-    init_clock();
+    //init_clock();
     P1DIR |= 0x04;
 
     while(1) {
