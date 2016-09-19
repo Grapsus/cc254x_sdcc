@@ -5,10 +5,11 @@ CFLAGS=--model-medium
 all:
 	sdas8051 -glos -p delay.s
 	$(CC) $(CFLAGS) -c util.c -o util.rel
-	$(CC) $(CFLAGS) blink.c -o blink.hex util.rel delay.rel
+	$(CC) $(CFLAGS) -DUART0 -c uart.c -o uart.rel
+	$(CC) $(CFLAGS) blink.c -o blink.hex util.rel delay.rel uart.rel
 
 clean:
-	rm *.asm *.hex *.lst *.map *.mem *.rel *.lk *.rst *.sym -f
+	rm *.asm *.hex *.lst *.map *.mem *.rel *.lk *.rst *.sym *.adb *.cdb *.omf -f
 
 flash:
 	cc-tool -f -e -w blink.hex
