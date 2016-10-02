@@ -1,4 +1,11 @@
-/** usb_serial app:
+/* this is an attempt to port Wixel SDK serial USB (CDC ACM protocol) code to cc2540
+   WORK IN PROGRESS, compiles but doesn't work yet
+
+   beware this is cc2540 only, cc2541 doesn't have USB hardware
+   you're left with UART for communication
+
+============================================
+  usb_serial app:
 
 This app allows you to turn a Wixel into a USB-to-TTL serial adapter.
 

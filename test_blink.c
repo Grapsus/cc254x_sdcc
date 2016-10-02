@@ -1,3 +1,5 @@
+/* sample code to wiggle P1.2 at 1 Hz */
+
 #include "cc254x_types.h"
 #include "cc254x_map.h"
 #include "util.h"
