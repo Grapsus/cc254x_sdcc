@@ -27,3 +27,20 @@ void delay_ms(uint16 milliseconds)
         delay_us(249); // there's some overhead, so only delay by 249 here
     }
 }
+
+void disableUsbPullup()
+{
+    P2DIR &= ~(1<<0);  // Make P2_0 be a floating input.
+}
+
+void enableUsbPullup()
+{
+    P2_0 = 1;
+    P2DIR |= (1<<0);   // Drive P2_0 high.
+}
+
+uint8 vinPowerPresent()
+{
+    return 1;
+}
+
