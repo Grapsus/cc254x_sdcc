@@ -19,6 +19,7 @@
 #define _WIXEL_TIME_H
 
 #include "cc254x_map.h"
+#include "cc254x_types.h"
 
 /*! Initializes the library.  This sets up Timer 4 to tick (approximately)
  * every millisecond and enables the Timer 4 interrupt.  Note that you

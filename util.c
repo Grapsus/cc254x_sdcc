@@ -44,3 +44,6 @@ uint8 vinPowerPresent()
     return 1;
 }
 
+/* empty interrupt 17 to make sure the interrupt table generated
+ * by SDCC is long enough */
+void isr_wdt() __interrupt(17) {}

@@ -12,8 +12,8 @@ PDATA volatile uint32 timeMs;
 
 ISR(T4, 0)
 {
+    T4CTL = 0b11111001;
     timeMs++;
-    // T4CC0 ^= 1; // If we do this, then on average the interrupts will occur precisely 1.000 ms apart.
 }
 
 uint32 getMs()
@@ -28,14 +28,17 @@ uint32 getMs()
 
 void timeInit()
 {
-    T4CC0 = 187;
+    /* modulo counting doesn't seem to trigger any interrupt on cc2450
+     * so we count down and restart the counter each time
+     * the value below was calibrated with a stopwatch */
+    T4CC0 = 249;
     T4IE = 1;     // Enable Timer 4 interrupt.  (IEN1.T4IE=1)
-
+    
     // DIV=111: 1:128 prescaler
     // START=1: Start the timer
     // OVFIM=1: Enable the overflow interrupt.
-    // MODE=10: Modulo
-    T4CTL = 0b11111010;
+    // MODE=01: Count down
+    T4CTL = 0b11111001;
 
     EA = 1; // Globally enable interrupts (IEN0.EA=1).
 }

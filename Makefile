@@ -3,7 +3,7 @@ CC=sdcc
 CFLAGS=--model-medium -L/usr/share/sdcc/include/
 SDCC_LIBS=/usr/share/sdcc/lib/medium/libsdcc.lib
 
-all: test_uart.hex test_usb.hex
+all: test_blink.hex test_uart.hex test_time.hex test_usb.hex
 
 libs: delay.s util.c uart.c
 	sdas8051 -glos -p delay.s
@@ -19,8 +19,11 @@ test_blink.hex: test_blink.c libs
 test_uart.hex: test_uart.c libs
 	$(CC) $(CFLAGS) test_uart.c -o test_uart.hex util.rel delay.rel uart.rel $(SDCC_LIBS)
 
+test_time.hex: test_time.c libs
+	$(CC) $(CFLAGS) test_time.c -o test_time.hex util.rel delay.rel uart.rel time.rel $(SDCC_LIBS)
+
 test_usb.hex: test_usb.c libs
-	$(CC) $(CFLAGS) test_usb.c -o test_usb.hex util.rel delay.rel time.rel uart.rel usb.rel usb_cdc_acm.rel
+	$(CC) $(CFLAGS) test_usb.c -o test_usb.hex util.rel delay.rel time.rel usb.rel usb_cdc_acm.rel
 
 clean:
 	rm *.asm *.hex *.lst *.map *.mem *.rel *.lk *.rst *.sym *.adb *.cdb *.omf -f
