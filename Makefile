@@ -1,6 +1,7 @@
 CC=sdcc
 #CFLAGS=--model-medium --debug --code-loc 0x0000 --code-size 0x7400 --iram-size 0x0100 --xram-loc 0xF000 --xram-size 0xF00
-CFLAGS=--model-medium
+CFLAGS=--model-medium -L/usr/share/sdcc/include/
+SDCC_LIBS=/usr/share/sdcc/lib/medium/libsdcc.lib
 
 all: test_uart.hex test_usb.hex
 
@@ -16,7 +17,7 @@ test_blink.hex: test_blink.c libs
 	$(CC) $(CFLAGS) test_blink.c -o test_blink.hex util.rel delay.rel
 
 test_uart.hex: test_uart.c libs
-	$(CC) $(CFLAGS) test_uart.c -o test_uart.hex util.rel delay.rel uart.rel
+	$(CC) $(CFLAGS) test_uart.c -o test_uart.hex util.rel delay.rel uart.rel $(SDCC_LIBS)
 
 test_usb.hex: test_usb.c libs
 	$(CC) $(CFLAGS) test_usb.c -o test_usb.hex util.rel delay.rel time.rel uart.rel usb.rel usb_cdc_acm.rel

@@ -84,6 +84,22 @@ volatile BIT uartNRxParityErrorOccurred;
 volatile BIT uartNRxFramingErrorOccurred;
 volatile BIT uartNRxBufferFullOccurred;
 
+/* getchar and putchar must be implemented in order to make
+ * SDCC's stdio work */
+char getchar(void)
+{
+    // TODO fixme make the waiting less power hungry
+    while( ! uartNRxAvailable()) {}
+    return uartNRxReceiveByte();
+}
+
+void putchar(char c)
+{
+    if(uart0TxAvailable()) {
+        uart0TxSendByte(c);
+    }
+}
+
 void uartNInit(void)
 {
     /* USART0 UART Alt. 1:
