@@ -30,6 +30,7 @@ Now that we have serial communications with the chip, I'm trying to start the ra
 
 - [CC2540/41 System-on-Chip Solution for 2.4-
 GHz Bluetooth ® low energy Applications User's Guide](www.ti.com/lit/pdf/swru191)
+- [SDCC Manual](http://sdcc.sourceforge.net/doc/sdccman.pdf)
 - [TI BLE stack](http://www.ti.com/tool/ble-stack)
 - [Pololu Wixel SDK](https://github.com/pololu/wixel-sdk)
 - various cheap cc2540 and cc2541 boards from eBay

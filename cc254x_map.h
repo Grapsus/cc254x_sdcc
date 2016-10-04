@@ -118,6 +118,12 @@ SFRBIT(0x90, P1, P1_7, P1_6, P1_5, P1_4, P1_3, P1_2, P1_1, P1_0)
 SFR(0x91, RFIM)
 SFR(0x92, DPS)
 SFR(0x93, MPAGE)
+/* see "2.2.4 XDATA Memory Access" in the datasheet
+   see "4.1.1 pdata access by SFR" in SDCC manual
+   this MCU uses a non standard way to access XDATA
+   this is how we tell SDCC which register to use
+   without this trick the CRT code for initializing globals silently fails */
+__sfr __at(0x93) _XPAGE;
 SFR(0x94, T2CTRL)
 SFR(0x95, ST0)
 SFR(0x96, ST1)
