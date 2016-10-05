@@ -21,33 +21,42 @@
  *       are for DTR and RTS (the current defaults set by usb_cdc_acm.lib are RTS=1,DTR=0)
  */
 
-/** Dependencies **************************************************************/
+#include "cc254x_types.h"
 #include "cc254x_map.h"
 #include "time.h"
 #include "util.h"
 #include "usb.h"
 #include "usb_com.h"
 
+char CODE *msg = "Hello from USB!\r\n";
+
+void usb_puts(uint8 CODE *str)
+{
+    while(*str)
+    {
+        if(usbComTxAvailable()) {
+            usbComTxSendByte(*str++);
+        }
+    }
+}
+
+#include <stdio.h>
+
 void main()
 {
-    //systemInit();
+    uint32 t = 0;
+
     init_clock();
     timeInit();
-    delay_ms(500);
     usbInit();
 
     while(1)
     {  
-        delay_ms(500);
         usbComService();
-        //usbToUartService();
-        if(usbComTxAvailable() >= 5)
+        if(getMs() - t > 3000)
         {
-            usbComTxSendByte('H');
-            usbComTxSendByte('i');
-            usbComTxSendByte('!');
-            usbComTxSendByte('\r');
-            usbComTxSendByte('\n');
+            t = getMs();
+            usb_puts(msg);
         }
     }
 }

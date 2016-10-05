@@ -64,6 +64,8 @@ typedef __bit BIT;
  */
 #define XDATA __xdata
 
+#define CODE_TO_XDATA(addr) ((uint8 XDATA *)addr + 0x8000)
+
 #elif defined(__CDT_PARSER__)
 
 // Avoid syntax and semantic errors in eclipse.

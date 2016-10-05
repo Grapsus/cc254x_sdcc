@@ -28,15 +28,18 @@ void delay_ms(uint16 milliseconds)
     }
 }
 
+/* This is specific to each board, P1_2 drives USB pull-up
+   to tell the USB host the device presence
+   adapt if necessary, or just tie the pull-up resistor to Vcc */
 void disableUsbPullup()
 {
-    P2DIR &= ~(1<<0);  // Make P2_0 be a floating input.
+    P1DIR &= ~(1<<2);  // Make P1_2 be a floating input.
 }
 
 void enableUsbPullup()
 {
-    P2_0 = 1;
-    P2DIR |= (1<<0);   // Drive P2_0 high.
+    P1_2 = 1;
+    P1DIR |= (1<<2);   // Drive P1_2 high.
 }
 
 uint8 vinPowerPresent()

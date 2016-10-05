@@ -22,7 +22,8 @@ Run `HEX=test_XXXX.hex make flash` to flash any of the examples onto the chip.
 
 - `test_blink.c` works and prooves that SDCC can be used to produce code for cc254x
 - `test_uart.c` works and is essential for starting to poke the radio hardware
-- `test_usb.c` builds but doesn't work for some reason, but it's not that important since we have UART
+- `test_time.c` uses TIMER4 interrupts to generate a millisecond clock
+- `test_usb.c` ugly and incomplete but works for sending data through CDC ACM (cc2540 only)
 
 Now that we have serial communications with the chip, I'm trying to start the radio interface and receive BTLE advertising frames which is the starting point for writing a BTLE stack. I'll post the code as soon as I have something working.
 

@@ -3,6 +3,8 @@
 #include "cc254x_types.h"
 #include "util.h"
 //#include <board.h>
+//#include <stdio.h>
+//#include "uart0.h"
 
 // TODO: make the usb library work will with Sleep Mode 0 (an interrupt should be enabled for all the endpoints we care about so we can handle them quickly)
 // TODO: SUSPEND MODE!
@@ -34,7 +36,8 @@ void usbInit()
 // TODO: try using DMA in usbReadFifo and usbWriteFifo and see how that affects the speed of usbComTxSend(x, 128).
 void usbReadFifo(uint8 endpointNumber, uint8 count, uint8 XDATA * buffer)
 {
-    XDATA uint8 * fifo = (XDATA uint8 *)(0xDE20 + (uint8)(endpointNumber<<1));
+    XDATA uint8 * fifo = (XDATA uint8 *)(0x6220 + (uint8)(endpointNumber<<1));
+    //printf("UR %hhd\r\n", count);
     while(count > 0)
     {
         count--;
@@ -46,10 +49,12 @@ void usbReadFifo(uint8 endpointNumber, uint8 count, uint8 XDATA * buffer)
 
 void usbWriteFifo(uint8 endpointNumber, uint8 count, const uint8 XDATA * buffer)
 {
-    XDATA uint8 * fifo = (XDATA uint8 *)(0xDE20 + (uint8)(endpointNumber<<1));
+    XDATA uint8 * fifo = (XDATA uint8 *)(0x6220 + (uint8)(endpointNumber<<1));
+    //printf("UW %hhd\r\n", count);
     while(count > 0)
     {
         count--;
+        //printf("   %02hhx\r\n", *buffer);
         *fifo = *(buffer++);
     }
 
@@ -61,10 +66,15 @@ void usbWriteFifo(uint8 endpointNumber, uint8 count, const uint8 XDATA * buffer)
 // Reset interrupt.
 static void basicUsbInit()
 {
+    // enable USB and USB PLL
+    USBCTRL |= (1 << 1) | (1 << 0);
+    // wait for PLL to lock
+    while( ! USBCTRL & (1 << 7)){}
+
     usbSuspendMode = 0;
 
     // Enable suspend detection and disable any other weird features.
-    USBPOW = 1;
+    //USBPOW = 1;
 
     // Enable the USB common interrupts we care about: Reset, Resume, Suspend.
     // Without this, we USBCIF.SUSPENDIF will not get set (the datasheet is incomplete).
@@ -322,7 +332,7 @@ static void usbStandardDeviceRequestHandler()
             {
                 case USB_DESCRIPTOR_TYPE_DEVICE:
                 {
-                    controlTransferPointer = (uint8 XDATA *)&usbDeviceDescriptor;
+                    controlTransferPointer = CODE_TO_XDATA(&usbDeviceDescriptor);
                     controlTransferBytesLeft = sizeof(USB_DESCRIPTOR_DEVICE);
                     break;
                 }
@@ -336,7 +346,7 @@ static void usbStandardDeviceRequestHandler()
 
                     // The configuration descriptor has an application-dependent size, which
                     // we determine by reading the 3rd and 4th byte.
-                    controlTransferPointer = (uint8 XDATA *)usbConfigurationDescriptor;
+                    controlTransferPointer = CODE_TO_XDATA(usbConfigurationDescriptor);
                     controlTransferBytesLeft = *(uint16 *)&usbConfigurationDescriptor[2];
                     break;
                 }
@@ -352,7 +362,7 @@ static void usbStandardDeviceRequestHandler()
                         return;
                     }
 
-                    controlTransferPointer = (uint8 XDATA *)usbStringDescriptors[usbSetupPacket.wValue & 0xFF];
+                    controlTransferPointer = CODE_TO_XDATA(usbStringDescriptors[usbSetupPacket.wValue & 0xFF]);
                     controlTransferBytesLeft = controlTransferPointer[0];
                     break;
                 }
@@ -381,6 +391,7 @@ static void usbStandardDeviceRequestHandler()
             //pendingDeviceAddress = (usbSetupPacket.wValue & 0xFF) | 0x80;
 
             USBADDR = (uint8)usbSetupPacket.wValue;
+
             usbDeviceState = ((uint8)usbSetupPacket.wValue) ? USB_STATE_ADDRESS : USB_STATE_DEFAULT;
 
             // Get ready to provide a handshake.
